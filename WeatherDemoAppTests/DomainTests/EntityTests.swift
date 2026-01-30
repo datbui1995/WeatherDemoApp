@@ -11,7 +11,7 @@ import SwiftData
 
 @MainActor
 final class CityEntityTests: SwiftDataTestCase {
-
+    
     // MARK: - Designated initializer
     func test_init_setsAllPropertiesCorrectly() {
         let entity = CityEntity(
@@ -22,7 +22,7 @@ final class CityEntityTests: SwiftDataTestCase {
             longitude: "105.81",
             population: "9000000"
         )
-
+        
         XCTAssertEqual(entity.id, "custom-id")
         XCTAssertEqual(entity.name, "Hanoi")
         XCTAssertEqual(entity.country, "VN")
@@ -31,9 +31,9 @@ final class CityEntityTests: SwiftDataTestCase {
         XCTAssertEqual(entity.population, "9000000")
         XCTAssertNotNil(entity.createdAt)
     }
-
+    
     // MARK: - Auto-generated values
-
+    
     func test_init_generatesUniqueIdByDefault() {
         let entity1 = CityEntity(
             name: "Hanoi",
@@ -42,7 +42,7 @@ final class CityEntityTests: SwiftDataTestCase {
             longitude: "105.81",
             population: "9000000"
         )
-
+        
         let entity2 = CityEntity(
             name: "HCM",
             country: "VN",
@@ -50,13 +50,13 @@ final class CityEntityTests: SwiftDataTestCase {
             longitude: "106.69",
             population: "8000000"
         )
-
+        
         XCTAssertNotEqual(entity1.id, entity2.id)
     }
-
+    
     func test_createdAt_isSetToCurrentTime() {
         let before = Date()
-
+        
         let entity = CityEntity(
             name: "Hanoi",
             country: "VN",
@@ -64,15 +64,15 @@ final class CityEntityTests: SwiftDataTestCase {
             longitude: "105.81",
             population: "9000000"
         )
-
+        
         let after = Date()
-
+        
         XCTAssertTrue(entity.createdAt >= before)
         XCTAssertTrue(entity.createdAt <= after)
     }
-
+    
     // MARK: - Convenience initializer
-
+    
     func test_convenienceInit_fromCity_setsCorrectValues() {
         let city = City(
             name: "Hanoi",
@@ -81,18 +81,18 @@ final class CityEntityTests: SwiftDataTestCase {
             longitude: "105.810481",
             population: "9000000"
         )
-
+        
         let entity = CityEntity(city: city)
-
+        
         XCTAssertEqual(entity.name, city.name)
         XCTAssertEqual(entity.country, city.country)
         XCTAssertEqual(entity.latitude, city.latitude)
         XCTAssertEqual(entity.longitude, city.longitude)
         XCTAssertEqual(entity.population, city.population)
     }
-
+    
     // MARK: - SwiftData integration sanity check
-
+    
     func test_entity_canBeInsertedAndSaved() throws {
         let entity = CityEntity(
             name: "Hanoi",
@@ -101,15 +101,49 @@ final class CityEntityTests: SwiftDataTestCase {
             longitude: "105.81",
             population: "9000000"
         )
-
+        
         context.insert(entity)
         try context.save()
-
+        
         let descriptor = FetchDescriptor<CityEntity>()
         let results = try context.fetch(descriptor)
-
+        
         XCTAssertEqual(results.count, 1)
         XCTAssertEqual(results.first?.name, "Hanoi")
+    }
+    
+    func test_displayedName_withCountry() {
+        // GIVEN
+        let city = City(
+            name: "Berlin",
+            country: "Germany",
+            latitude: "",
+            longitude: "",
+            population: ""
+        )
+        
+        // WHEN
+        let displayedName = city.displayedName
+        
+        // THEN
+        XCTAssertEqual(displayedName, "Berlin, Germany")
+    }
+    
+    func test_displayedName_withoutCountry() {
+        // GIVEN
+        let city = City(
+            name: "Singapore",
+            country: "",
+            latitude: "",
+            longitude: "",
+            population: ""
+        )
+        
+        // WHEN
+        let displayedName = city.displayedName
+        
+        // THEN
+        XCTAssertEqual(displayedName, "Singapore")
     }
 }
 

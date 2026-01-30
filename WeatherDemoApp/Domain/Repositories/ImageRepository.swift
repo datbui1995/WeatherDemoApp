@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-protocol ImageRepository {
+protocol ImageRepository: AnyObject {
     func getCache(key: String) -> UIImage?
     func setCache(_ item: UIImage, key: String)
     func loadImage(urlString: String) async throws -> UIImage?

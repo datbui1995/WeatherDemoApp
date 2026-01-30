@@ -37,7 +37,7 @@ final class LocalCacheWeatherRepository: WeatherCacheRepository {
     }
 }
 
-private final class CacheItem {
+final class CacheItem {
     let value: CurrentWeather
     let expiry: Date
     

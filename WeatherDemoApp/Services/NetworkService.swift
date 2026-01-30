@@ -8,7 +8,7 @@
 import Foundation
 import Combine
 
-protocol NetworkService {
+protocol NetworkService: AnyObject {
     func request<T: Decodable>(_ endpoint: Endpoint) async throws -> T
     func loadImage(urlString: String) async throws -> Data?
 }
@@ -43,19 +43,22 @@ final class ImplNetworkService: NetworkService {
         return data
     }
     
-    private func makeRequest(_ endpoint: Endpoint) throws -> URLRequest {
-        guard var components = URLComponents(string: endpoint.url) else {
+    func makeRequest(_ endpoint: Endpoint) throws -> URLRequest {
+        guard
+            let components = URLComponents(string: endpoint.url),
+            let scheme = components.scheme,
+            let host = components.host,
+            scheme == "http" || scheme == "https"
+        else {
             throw NetworkError.invalidURL
         }
-        
-        components.queryItems = endpoint.queryItems
-        
-        guard let url = components.url else {
-            throw NetworkError.invalidURL
-        }
-        
-        return URLRequest(url: url)
+
+        var finalComponents = components
+        finalComponents.queryItems = endpoint.queryItems
+
+        return URLRequest(url: finalComponents.url!)
     }
+
     
     private func validate(_ response: URLResponse) throws {
         guard let http = response as? HTTPURLResponse, 200..<300 ~= http.statusCode else {

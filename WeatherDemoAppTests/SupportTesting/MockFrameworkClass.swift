@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-final class MockNavigationController: UINavigationController {
+final class SpyNavigationController: UINavigationController {
 
     private(set) var pushedViewControllers: [UIViewController] = []
 

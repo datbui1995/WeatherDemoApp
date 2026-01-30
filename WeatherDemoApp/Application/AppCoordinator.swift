@@ -17,10 +17,11 @@ enum Route {
 class AppCoordinator {
     
     private var navigation: UINavigationController
-    private let appDIContainer: AppDIContainer
+    private let appDIContainer: AppDIContainerMakingViewModelType
     private var cancellables = Set<AnyCancellable>()
     
-    init(navigation: UINavigationController, appDIContainer: AppDIContainer) {
+    init(navigation: UINavigationController,
+         appDIContainer: AppDIContainerMakingViewModelType) {
         self.navigation = navigation
         self.appDIContainer = appDIContainer
     }

@@ -10,40 +10,26 @@ import Combine
 import UIKit
 @testable import WeatherDemoApp
 
-protocol HomeViewModel {
-    var navigation: PassthroughSubject<Route, Never> { get }
-}
-
 @MainActor
-final class MockHomeViewModel: HomeViewModel {
+final class SpyHomeViewModel: HomeViewModel {
+
+    // MARK: - Outputs
+    let citiesSubject = PassthroughSubject<[City], Never>()
+    var citiesPublisher: AnyPublisher<[City], Never> {
+        citiesSubject.eraseToAnyPublisher()
+    }
+
     let navigation = PassthroughSubject<Route, Never>()
-}
 
-final class MockDetailCityViewModel: DetailCityViewModel {
-    var currentWeather: WeatherDemoApp.CurrentWeather = .empty
-    var uiImage: UIImage? = nil
-    
-    let city: City
-    init(city: City) {
-        self.city = city
-    }
-    
-    func loadData() {
-        
-    }
-}
+    // MARK: - Inputs tracking
+    private(set) var receivedSearchTexts: [String] = []
+    private(set) var selectedCities: [City] = []
 
-@MainActor
-final class MockAppDIContainer: AppDIContainer {
-    let homeViewModel = MockHomeViewModel()
-    private(set) var receivedCity: City?
-    
-    func makeHomeViewModel() -> HomeViewModel {
-        homeViewModel
+    func updateSearchText(_ text: String) {
+        receivedSearchTexts.append(text)
     }
-    
-    func makeDetailViewModel(city: City) -> any DetailCityViewModel {
-        receivedCity = city
-        return MockDetailCityViewModel(city: city)
+
+    func didSelect(city: City) {
+        selectedCities.append(city)
     }
 }

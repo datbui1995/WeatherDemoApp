@@ -8,7 +8,12 @@
 import Foundation
 import UIKit
 
-class AppDIContainer {
+protocol AppDIContainerMakingViewModelType {
+    func makeHomeViewModel() -> any HomeViewModel
+    func makeDetailViewModel(city: City) -> ImplDetailCityViewModel
+}
+
+class AppDIContainer: AppDIContainerMakingViewModelType {
     
     private let networkService: NetworkService
     private let localService: SwiftDataService
@@ -62,6 +67,7 @@ extension AppDIContainer {
         let imageUseCase = ImplImageUseCase(repository: cacheImageRepo)
         return imageUseCase
     }
+    
     private func makeHistoryUseCase() -> any HistoryUseCase {
         let historyRepo = LocalHistoryRepository(service: localService)
         let historyUseCase = ImplHistoryUseCase(repository: historyRepo)

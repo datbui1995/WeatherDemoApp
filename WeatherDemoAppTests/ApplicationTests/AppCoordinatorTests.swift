@@ -13,22 +13,30 @@ import Combine
 @MainActor
 final class AppCoordinatorTests: XCTestCase {
 
-    private var navigation: MockNavigationController!
-    private var diContainer: MockAppDIContainer!
+    private var navigation: SpyNavigationController!
     private var coordinator: AppCoordinator!
+    private var homeViewModel: SpyHomeViewModel!
+    private var diContainer: FakeAppDIContainer!
 
     override func setUp() {
         super.setUp()
-        navigation = MockNavigationController()
-        diContainer = MockAppDIContainer(networkService: ImplNetworkService(), localService: ImplSwiftDataService())
+        navigation = SpyNavigationController()
+        homeViewModel = SpyHomeViewModel()
+        diContainer = FakeAppDIContainer(homeViewModel: homeViewModel)
         coordinator = AppCoordinator(
             navigation: navigation,
             appDIContainer: diContainer
         )
     }
 
-    // MARK: - start()
-
+    override func tearDown() {
+        coordinator = nil
+        navigation = nil
+        homeViewModel = nil
+        diContainer = nil
+        super.tearDown()
+    }
+    
     func test_start_pushesHomeViewController() {
         // When
         coordinator.start()
@@ -39,5 +47,13 @@ final class AppCoordinatorTests: XCTestCase {
             navigation.pushedViewControllers.first is HomeViewController
         )
     }
+    
+    func test_detailRoute_pushesDetailViewController() {
+        coordinator.start()
 
+        let city = Mock.mockCity
+        homeViewModel.navigation.send(.detail(city))
+
+        XCTAssertEqual(navigation.pushedViewControllers.count, 2)
+    }
 }
