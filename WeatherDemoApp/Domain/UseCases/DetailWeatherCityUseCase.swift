@@ -11,8 +11,8 @@ protocol DetailWeatherCityUseCase {
 }
 
 final class ImplDetailWeatherCityUseCase: DetailWeatherCityUseCase {
-    private let repository: DetailWeatherCityRepository
-    private let weatherCacheRepository: WeatherCacheRepository
+    let repository: DetailWeatherCityRepository
+    let weatherCacheRepository: WeatherCacheRepository
     init(repository: DetailWeatherCityRepository, weatherCacheRepository: WeatherCacheRepository) {
         self.repository = repository
         self.weatherCacheRepository = weatherCacheRepository

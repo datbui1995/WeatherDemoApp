@@ -8,12 +8,12 @@
 import Foundation
 import UIKit
 
-protocol AppDIContainerMakingViewModelType {
+protocol AppDIContainerMakingViewModelAction {
     func makeHomeViewModel() -> any HomeViewModel
     func makeDetailViewModel(city: City) -> ImplDetailCityViewModel
 }
 
-class AppDIContainer: AppDIContainerMakingViewModelType {
+class AppDIContainer: AppDIContainerMakingViewModelAction {
     
     private let networkService: NetworkService
     private let localService: SwiftDataService
@@ -32,6 +32,30 @@ class AppDIContainer: AppDIContainerMakingViewModelType {
     public func makeNetworkService() -> NetworkService {
         return networkService
     }
+    
+    // Make use case
+    func makeSearchUseCase() -> any SearchUseCase {
+        let repo = RemoteCityRepository(networkService: networkService)
+        let useCase = ImplSearchUseCase(repoCity: repo)
+        return useCase
+    }
+    
+    func makeWeatherUseCase() -> any DetailWeatherCityUseCase {
+        let repo = RemoteDetailCityRepository(networkService: networkService)
+        let useCase = ImplDetailWeatherCityUseCase(repository: repo, weatherCacheRepository: cacheWeatherRepo)
+        return useCase
+    }
+    
+    func makeImageUseCase() -> any ImageUseCase {
+        let imageUseCase = ImplImageUseCase(repository: cacheImageRepo)
+        return imageUseCase
+    }
+    
+    func makeHistoryUseCase() -> any HistoryUseCase {
+        let historyRepo = LocalHistoryRepository(service: localService)
+        let historyUseCase = ImplHistoryUseCase(repository: historyRepo)
+        return historyUseCase
+    }
 }
 
 extension AppDIContainer {
@@ -47,30 +71,5 @@ extension AppDIContainer {
                                                 imageUseCase: makeImageUseCase(),
                                                 historyUseCase: makeHistoryUseCase())
         return viewModel
-    }
-}
-
-extension AppDIContainer {
-    private func makeSearchUseCase() -> any SearchUseCase {
-        let repo = RemoteCityRepository(networkService: networkService)
-        let useCase = ImplSearchUseCase(repoCity: repo)
-        return useCase
-    }
-    
-    private func makeWeatherUseCase() -> any DetailWeatherCityUseCase {
-        let repo = RemoteDetailCityRepository(networkService: networkService)
-        let useCase = ImplDetailWeatherCityUseCase(repository: repo, weatherCacheRepository: cacheWeatherRepo)
-        return useCase
-    }
-    
-    private func makeImageUseCase() -> any ImageUseCase {
-        let imageUseCase = ImplImageUseCase(repository: cacheImageRepo)
-        return imageUseCase
-    }
-    
-    private func makeHistoryUseCase() -> any HistoryUseCase {
-        let historyRepo = LocalHistoryRepository(service: localService)
-        let historyUseCase = ImplHistoryUseCase(repository: historyRepo)
-        return historyUseCase
     }
 }

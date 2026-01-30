@@ -20,9 +20,9 @@ final class ImplDetailCityViewModel: DetailCityViewModel {
     @Published var currentWeather: CurrentWeather = .empty
     @Published var uiImage: UIImage?
     
-    private let weatherUseCase: DetailWeatherCityUseCase
-    private let imageUseCase: ImageUseCase
-    private let historyUseCase: HistoryUseCase
+    let weatherUseCase: DetailWeatherCityUseCase
+    let imageUseCase: ImageUseCase
+    let historyUseCase: HistoryUseCase
     
     init(city: City, weatherUseCase: DetailWeatherCityUseCase,
          imageUseCase: ImageUseCase,

@@ -13,7 +13,7 @@ protocol ImageUseCase {
 }
 
 class ImplImageUseCase: ImageUseCase {
-    private let repository: ImageRepository
+    let repository: ImageRepository
     
     init(repository: ImageRepository) {
         self.repository = repository

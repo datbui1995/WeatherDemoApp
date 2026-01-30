@@ -50,7 +50,7 @@ final class ImplNetworkServiceTests: XCTestCase {
             return (response, json)
         }
 
-        sut = ImplNetworkService(session: makeTestSession())
+        sut = await ImplNetworkService(session: makeTestSession())
 
         let endpoint = Endpoint(
             url: "https://test.com",
@@ -76,7 +76,7 @@ final class ImplNetworkServiceTests: XCTestCase {
             return (response, Data())
         }
 
-        sut = ImplNetworkService(session: makeTestSession())
+        sut = await ImplNetworkService(session: makeTestSession())
         let endpoint = Endpoint(url: "https://test.com", queryItems: [])
 
         // Act / Assert
@@ -104,7 +104,7 @@ final class ImplNetworkServiceTests: XCTestCase {
             return (response, invalidJSON)
         }
 
-        sut = ImplNetworkService(session: makeTestSession())
+        sut = await ImplNetworkService(session: makeTestSession())
         let endpoint = Endpoint(url: "https://test.com", queryItems: [])
 
         // Act / Assert
@@ -134,7 +134,7 @@ final class ImplNetworkServiceTests: XCTestCase {
             return (response, imageData)
         }
 
-        sut = ImplNetworkService(session: makeTestSession())
+        sut = await ImplNetworkService(session: makeTestSession())
 
         // Act
         let result = try await sut.loadImage(urlString: "https://image.test/icon.png")
@@ -155,7 +155,7 @@ final class ImplNetworkServiceTests: XCTestCase {
             return (response, Data())
         }
 
-        sut = ImplNetworkService(session: makeTestSession())
+        sut = await ImplNetworkService(session: makeTestSession())
 
         // Act
         let result = try await sut.loadImage(urlString: "not a url")
@@ -192,7 +192,7 @@ final class ImplNetworkServiceTests: XCTestCase {
             return (response, Data("{}".utf8))
         }
 
-        sut = ImplNetworkService(session: makeTestSession())
+        sut = await ImplNetworkService(session: makeTestSession())
 
         let endpoint = Endpoint(
             url: "https://test.com/search",

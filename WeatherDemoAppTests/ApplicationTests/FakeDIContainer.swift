@@ -9,7 +9,7 @@ import UIKit
 import Combine
 @testable import WeatherDemoApp
 
-final class FakeAppDIContainer: AppDIContainerMakingViewModelType {
+final class FakeAppDIContainer: AppDIContainerMakingViewModelAction {
 
     let homeViewModel: SpyHomeViewModel
 

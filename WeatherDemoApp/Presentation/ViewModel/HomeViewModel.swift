@@ -39,8 +39,8 @@ final class ImplHomeViewModel: HomeViewModel {
         searchText.prepend("")
             .debounce(for: .milliseconds(Constant.debouceTime), scheduler: RunLoop.main)
             .removeDuplicates()
-            .flatMap { [weak self] query -> AnyPublisher<[City], Never> in
-                self?.searchPublisher(query: query) ?? Just([]).eraseToAnyPublisher()
+            .flatMap { [unowned self] query -> AnyPublisher<[City], Never> in
+                self.searchPublisher(query: query)
             }
             .assign(to: &$cities)
         
@@ -74,12 +74,8 @@ extension ImplHomeViewModel {
             .eraseToAnyPublisher()
     }
     
-    private func remoteSearchPublisher(query: String) -> AnyPublisher<[City], Never> {
-        Future { [weak self] promise in
-            guard let self else { promise(.success([]))
-                return
-            }
-            
+    func remoteSearchPublisher(query: String) -> AnyPublisher<[City], Never> {
+        Future { [unowned self] promise in
             Task {
                 do {
                     let result = try await self.searchUseCase.search(cityName: query)

@@ -93,21 +93,16 @@ final class CacheImageRepositoryTests: XCTestCase {
 
 
 final class MockNetworkService: NetworkService {
-
+    
     var loadImageResult: Result<Data?, Error>?
     private(set) var loadImageCalledWithURL: String?
-
+    
     func request<T: Decodable>(_ endpoint: Endpoint) async throws -> T {
-        fatalError("Not needed for CacheImageRepository tests")
+        throw NSError(domain: "MockNetworkService", code: -999)
     }
-
+    
     func loadImage(urlString: String) async throws -> Data? {
         loadImageCalledWithURL = urlString
-
-        guard let loadImageResult else {
-            fatalError("loadImageResult not set")
-        }
-
-        return try loadImageResult.get()
+        return try loadImageResult?.get()
     }
 }
